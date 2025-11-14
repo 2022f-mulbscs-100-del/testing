@@ -1,0 +1,11 @@
+name : Deploy React App Distribution
+on: [push, workflow_dispatch]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Deploying React App Distribution"
+        run: |
+         echo "Deploying React App Distribution!"
+         echo "${{toJson(github)}}"
+         git clone https://github.com/${{github.repository}}.git
