@@ -16,6 +16,7 @@ jobs:
       - name: check node version
         run: node -v
       - name: install dependencies
+        working-directory: ./react-app
         run: npm install
       - name : build project
         run: npm run build
