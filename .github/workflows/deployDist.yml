@@ -1,0 +1,22 @@
+name : Deploy React App Distribution
+on: [push, workflow_dispatch]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Deploying React App Distribution"
+        run: |
+         echo "Deploying React App Distribution!"
+         echo "${{toJson(github)}}"
+         git clone https://github.com/${{github.repository}}.git
+      - name: "Install node using marketplace"
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: check node version
+        run: node -v
+      - name: install dependencies
+        run: npm i
+
+
+#can use pre built actions like actions/checkout@v4 from marketplace github actions
