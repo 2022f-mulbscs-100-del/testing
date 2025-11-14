@@ -16,7 +16,7 @@ jobs:
       - name: check node version
         run: node -v
       - name: install dependencies
-        run: npm i
+        run: npm install
       - name : build project
         run: npm run build
       - name: build completed
