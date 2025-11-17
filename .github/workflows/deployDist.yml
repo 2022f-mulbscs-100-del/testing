@@ -24,18 +24,22 @@ jobs:
           # the key is generated using the hash of package-lock.json file if there is any change in the file the hash will change and new dependencies will be installed
       - name: install dependencies
         run: npm install
+
       - name : build project
         run: npm run build
+        
       - name: build completed
         run: echo "build completed"
+        
       - name: upload build artifcat
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: react-app-dist
           path: build/
           #Artifacts are uploaded to GitHub’s storage so you (or other jobs) can use the output of your workflow later.
+
       - name: download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: react-app-dist
 
@@ -45,22 +49,28 @@ jobs:
     steps:
       - name: "Deploying React App Distribution"
         uses: actions/checkout@v4
+
       - name: "Install node using marketplace"
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: check node version
         run: node -v
+
       - name: cache dependencies
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
       - name: install dependencies
         working-directory: react-app
         run: npm install
+
       - name : build project
         run: npm run build
+        
       - name: build completed
         run: echo "build completed"
 
