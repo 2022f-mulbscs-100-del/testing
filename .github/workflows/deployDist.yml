@@ -1,17 +1,61 @@
 name : Deploy React App Distribution
 on: [push, workflow_dispatch, pull_request]
+#on: push: branches: [main] # to trigger workflow only on main branch push
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: "Deploying React App Distribution"
-         uses: actions/checkout@v4
+        uses: actions/checkout@v4
       - name: "Install node using marketplace"
         uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: check node version
         run: node -v
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          # we create cache folder and give the key to that fplder so that next time when the workflow runs it can check if there is new dependencies to be installed or not it is check 
+          # by comparing the key if there is no change in key it will use the cached version cached version will speed up the workflow run time
+          # the key is generated using the hash of package-lock.json file if there is any change in the file the hash will change and new dependencies will be installed
+      - name: install dependencies
+        run: npm install
+      - name : build project
+        run: npm run build
+      - name: build completed
+        run: echo "build completed"
+      - name: upload build artifcat
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-app-dist
+          path: build/
+          #Artifacts are uploaded to GitHub’s storage so you (or other jobs) can use the output of your workflow later.
+      - name: download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-app-dist
+
+  deploy:
+    needs: build  # This job depends on the 'deploy' job to complete first otherwise both will run parllelly
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Deploying React App Distribution"
+        uses: actions/checkout@v4
+      - name: "Install node using marketplace"
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: check node version
+        run: node -v
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - name: install dependencies
         working-directory: react-app
         run: npm install
@@ -22,3 +66,4 @@ jobs:
 
 
 #can use pre built actions like actions/checkout@v4 from marketplace github actions
+#to prevent workflow trigger on comments  on ccommit message ad this [skip ci] or [ci skip]
