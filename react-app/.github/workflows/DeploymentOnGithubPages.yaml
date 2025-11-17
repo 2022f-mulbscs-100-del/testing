@@ -1,0 +1,58 @@
+name: "ReactDeploymentOnGithubPages"
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+jobs:
+ deployment:
+    runs-on: ubuntu-latest
+    steps:
+     - name: "checking out to main"
+       uses: actions/checkout@v4
+
+     - name: "creating node environment"
+       uses: actions/setup-node@v4
+       with:
+        node-version: '20'
+
+     - name: "cache dependancy"
+       uses: actions/cache@v3
+       with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    
+     - name: "installing dependency"
+       run: npm i
+
+     - name: "build the project"
+       run: |
+        npm run build
+        ls -la
+
+     - name: Upload build folder for GitHub Pages
+       uses: actions/upload-pages-artifact@v4
+       with:
+          path: ./dist
+
+
+ deploying:
+    needs: deployment
+    runs-on: ubuntu-latest
+    permissions:
+        contents: read
+        pages: write
+        id-token: write
+    environment:
+      name: github-pages
+      url: ${{steps.deploy-pages.outputs.page_url}}
+    steps:
+    - name: "deploy artifact"
+      id: deploy-pages
+      uses: actions/deploy-pages@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+               
+          
