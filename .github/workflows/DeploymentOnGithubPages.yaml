@@ -26,12 +26,14 @@ jobs:
        run: npm i
 
      - name: "build the project"
-       run: npm run build
+       run: |
+        npm run build
+        ls -la
 
      - name: Upload build folder for GitHub Pages
        uses: actions/upload-pages-artifact@v4
        with:
-          path: ./build
+          path: ./dist
 
 
  deploying:
