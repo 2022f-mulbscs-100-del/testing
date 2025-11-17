@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-app-dist
-          path: build/
+          path: ./dist
           #Artifacts are uploaded to GitHub’s storage so you (or other jobs) can use the output of your workflow later.
 
       
@@ -71,7 +71,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: react-app-dist
-          path: ./build
+          path: ./dist
 
       - name: build completed
         run: echo "build completed"
