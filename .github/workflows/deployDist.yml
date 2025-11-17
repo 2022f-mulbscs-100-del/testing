@@ -38,11 +38,7 @@ jobs:
           path: build/
           #Artifacts are uploaded to GitHub’s storage so you (or other jobs) can use the output of your workflow later.
 
-      - name: download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: react-app-dist
-          path: ./build
+      
 
   deploy:
     needs: build  # This job depends on the 'deploy' job to complete first otherwise both will run parllelly
@@ -66,11 +62,16 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: install dependencies
-        working-directory: react-app
         run: npm install
 
       - name : build project
         run: npm run build
+
+      - name: download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: react-app-dist
+          path: ./build
 
       - name: build completed
         run: echo "build completed"
