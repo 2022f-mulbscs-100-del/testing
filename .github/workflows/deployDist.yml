@@ -42,6 +42,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: react-app-dist
+          path: ./build
 
   deploy:
     needs: build  # This job depends on the 'deploy' job to complete first otherwise both will run parllelly
@@ -70,7 +71,7 @@ jobs:
 
       - name : build project
         run: npm run build
-        
+
       - name: build completed
         run: echo "build completed"
 
